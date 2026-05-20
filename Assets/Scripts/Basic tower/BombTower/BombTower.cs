@@ -13,14 +13,15 @@ public class BombTower : MonoBehaviour
     public GameObject bombPrefab; 
 
     private float fireCountdown = 0f;
-    public bool isInLight = false; // Public so you can see it in Inspector
+    private int lightsNearby = 0;
+
+    private bool isInLight => lightsNearby > 0;
 
     void Update()
     {
-        // 1. Visual feedback for light
         if (!isInLight)
         {
-            towerVisual.color = new Color(0.2f, 0.2f, 0.2f, 1f); // Darkened
+            towerVisual.color = new Color(0.2f, 0.2f, 0.2f, 1f);
             return;
         }
 
@@ -37,9 +38,6 @@ public class BombTower : MonoBehaviour
     void Shoot()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        
-        if (enemies.Length == 0) return;
-
         Transform target = null;
         float shortestDist = range;
 
@@ -47,7 +45,7 @@ public class BombTower : MonoBehaviour
         {
             EnemyBase enemyScript = e.GetComponent<EnemyBase>();
             
-            // Check if enemy is in range AND visible in light
+            // CHECK: Is enemy visible in light?
             if (enemyScript != null && enemyScript.isVisible)
             {
                 float dist = Vector2.Distance(transform.position, e.transform.position);
@@ -61,31 +59,29 @@ public class BombTower : MonoBehaviour
 
         if (target != null)
         {
-            if (bombPrefab == null) {
-                Debug.LogError("BOMB PREFAB MISSING on " + gameObject.name);
-                return;
+            if (bombPrefab != null)
+            {
+                GameObject bombGO = Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
+                bombGO.GetComponent<BombProjectile>().Launch(target, damage, firePoint.position);
             }
-
-            GameObject bombGO = Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
-            bombGO.GetComponent<BombProjectile>().Launch(target, damage, firePoint.position);
-            Debug.Log("Bomb Fired!");
         }
     }
 
-    // --- Physics Detection ---
+    // --- Light Counter Logic ---
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("MouseLight")) {
-            isInLight = true;
-            Debug.Log("Bomb Tower ENTERED light.");
+        if (other.CompareTag("MouseLight"))
+        {
+            lightsNearby++;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("MouseLight")) {
-            isInLight = false;
-            Debug.Log("Bomb Tower LEFT light.");
+        if (other.CompareTag("MouseLight"))
+        {
+            lightsNearby--;
+            if (lightsNearby < 0) lightsNearby = 0;
         }
     }
 

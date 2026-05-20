@@ -2,19 +2,33 @@ using UnityEngine;
 
 public class BasicTower : MonoBehaviour
 {
+    [Header("Stats")]
     public float range = 5f;
-    public float fireRate = 1f;
+    public float fireRate = 1.5f;
     public int damage = 1;
+    
+    [Header("Setup")]
     public Transform firePoint;
     public SpriteRenderer towerVisual;
-
+    
     private float fireCountdown = 0f;
-    private bool isInLight = false;
+    private int lightsNearby = 0; 
+
+    // Property to check if any light source is touching us
+    private bool isInLight => lightsNearby > 0;
 
     void Update()
     {
-        if (!isInLight) return;
+        // 1. Handle Visuals and State
+        if (!isInLight)
+        {
+            towerVisual.color = new Color(0.2f, 0.2f, 0.2f, 1f); // Dimmed
+            return;
+        }
 
+        towerVisual.color = Color.white; // Brightened
+
+        // 2. Handle Shooting
         fireCountdown -= Time.deltaTime;
         if (fireCountdown <= 0f)
         {
@@ -31,14 +45,12 @@ public class BasicTower : MonoBehaviour
 
         foreach (GameObject enemy in enemies)
         {
-            // 1. Get the EnemyBase script from the enemy
             EnemyBase enemyScript = enemy.GetComponent<EnemyBase>();
-
-            // 2. ONLY proceed if the enemy exists AND is currently in the light
+            
+            // CHECK: Is enemy visible in light?
             if (enemyScript != null && enemyScript.isVisible)
             {
                 float distance = Vector2.Distance(transform.position, enemy.transform.position);
-            
                 if (distance < shortestDistance)
                 {
                     shortestDistance = distance;
@@ -47,7 +59,6 @@ public class BasicTower : MonoBehaviour
             }
         }
 
-        // 3. Only fire if we found an enemy that was BOTH in range and in light
         if (nearestEnemy != null)
         {
             GameObject projGO = ProjectilePooler.Instance.GetProjectile();
@@ -61,13 +72,28 @@ public class BasicTower : MonoBehaviour
             }
         }
     }
+
+    // --- Light Counter Logic ---
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("MouseLight")) isInLight = true;
+        if (other.CompareTag("MouseLight"))
+        {
+            lightsNearby++;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("MouseLight")) isInLight = false;
+        if (other.CompareTag("MouseLight"))
+        {
+            lightsNearby--;
+            if (lightsNearby < 0) lightsNearby = 0;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, range);
     }
 }

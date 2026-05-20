@@ -3,24 +3,20 @@ using System.Collections.Generic;
 
 public abstract class EnemyBase : MonoBehaviour
 {
-    [Header("Health Settings")]
-    public float health = 3f;
+    [Header("Health Settings")] public float health = 3f;
     public int goldReward = 10;
 
-    [Header("Movement Settings")]
-    public float baseSpeed = 2f; 
+    [Header("Movement Settings")] public float baseSpeed = 2f;
     protected float currentSpeed;
-    
-    [Range(0f, 1f)] public float lightSpeedMultiplier = 0.5f; 
-    private float frostSpeedMultiplier = 1.0f; 
+
+    [Range(0f, 1f)] public float lightSpeedMultiplier = 0.5f;
+    private float frostSpeedMultiplier = 1.0f;
     private float frostTimer = 0f; // How much longer the slow lasts
 
-    [Header("Visibility")]
-    public bool isVisible = false; 
+    [Header("Visibility")] public bool isVisible = false;
     private int lightsTouchingMe = 0;
 
-    [Header("A* Pathfinding")]
-    private List<PathNode> path;
+    [Header("A* Pathfinding")] private List<PathNode> path;
     private int targetNodeIndex;
     private Pathfinding pathfinder;
     private Transform goal;
@@ -75,7 +71,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void Die()
     {
-        
+
         Destroy(gameObject);
     }
 
@@ -115,15 +111,32 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("MouseLight")) { lightsTouchingMe++; isVisible = true; }
+        if (other.CompareTag("MouseLight"))
+        {
+            lightsTouchingMe++;
+            isVisible = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("MouseLight"))
         {
-            lightsTouchingMe--;
-            if (lightsTouchingMe <= 0) { lightsTouchingMe = 0; isVisible = false; }
+            lightsTouchingMe++;
+            isVisible = true;
         }
+
+        {
+            if (other.CompareTag("MouseLight"))
+            {
+                lightsTouchingMe--;
+                if (lightsTouchingMe <= 0)
+                {
+                    lightsTouchingMe = 0;
+                    isVisible = false;
+                }
+            }
+        }
+
     }
-}
+} 
