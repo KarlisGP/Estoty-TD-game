@@ -5,17 +5,17 @@ TagManager:
   serializedVersion: 3
   tags:
   - Obstacle
-  - ' Enemy '
   - MouseLight
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Towers
   - Water
   - UI
-  - 
-  - 
+  - Obstacles
+  - Tiles
   - 
   - 
   - 
@@ -43,6 +43,24 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2574099603
+    locked: 0
+  - name: Grid
+    uniqueID: 391488333
+    locked: 0
+  - name: Enemies
+    uniqueID: 147865245
+    locked: 0
+  - name: Towers
+    uniqueID: 1661901907
+    locked: 0
+  - name: Projectiles
+    uniqueID: 176879213
+    locked: 0
+  - name: Fog
+    uniqueID: 71801099
     locked: 0
   m_RenderingLayers:
   - Default

@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 283451549770961625}
   - component: {fileID: 1758013029957175622}
   - component: {fileID: -3801248631885528214}
-  - component: {fileID: 4790004016282111466}
+  - component: {fileID: 850135747815353277}
   m_Layer: 0
   m_Name: enemy
-  m_TagString: ' Enemy '
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,7 +138,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 10, y: 10}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &-3801248631885528214
 Rigidbody2D:
@@ -167,7 +167,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &4790004016282111466
+--- !u!114 &850135747815353277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -181,3 +181,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemy
   health: 1
   speed: 2
+  isVisible: 0
